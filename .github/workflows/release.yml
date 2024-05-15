@@ -1,0 +1,16 @@
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  publish:
+    uses: ./.github/workflows/common.yml
+    with:
+      lib-version: ${{github.ref_name}}
+      configuration: Release
+      publish-package: true
+    secrets: inherit

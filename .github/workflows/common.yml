@@ -1,0 +1,45 @@
+name: Publish
+on:
+  workflow_call:
+    inputs:
+      lib-version:
+        required: true
+        type: string
+      configuration:
+        required: true
+        type: string
+      publish-package:
+        default: false
+        type: boolean
+
+jobs:
+  common:
+    name: Build and Publish lib
+    runs-on: [self-hosted, xamarin-android]
+    steps:
+    - name: Clean Workspace
+      uses: mickem/clean-after-action@v1
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Modify AssemblyInfo files
+      uses: mingjun97/file-regex-replace@v1
+      with:
+        regex: 'AssemblyVersion\("(.*?)"\)'
+        replacement: 'AssemblyVersion("${{ inputs.lib-version }}")'
+        include: 'AssemblyInfo.cs'
+
+    - name: Restore packages
+      run: nuget restore AndroidX.Work.Testing.sln
+
+    - name: Build the lib
+      run: msbuild AndroidX.Work.Testing.sln -p:Configuration=${{ inputs.configuration }} -clp:Summary
+
+    - name: Package the lib
+      if: ${{ inputs.publish-package == true }}
+      run: nuget pack AndroidX.Work.Testing/AndroidX.Work.Testing.csproj -properties Configuration=${{ inputs.configuration }} -Version ${{ inputs.lib-version }}
+
+    - name: Publish the lib
+      if: ${{ inputs.publish-package == true }}
+      run: nuget push *.nupkg -ApiKey ${{ secrets.NUGET_API_KEY }} -Source https://api.nuget.org/v3/index.json -SkipDuplicate
