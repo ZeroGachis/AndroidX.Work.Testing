@@ -10,7 +10,7 @@
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
   </PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="NFluent" Version="3.0.4" />
+		<PackageReference Include="NFluent" Version="3.1.0" />
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" Version="1.6.1.8" />
 		<PackageReference Include="Xamarin.AndroidX.Work.Runtime" Version="2.9.0.2" />
 		<PackageReference Include="Xamarin.Legacy.NUnitLite" Version="0.0.1-alpha" />
